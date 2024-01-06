@@ -4,7 +4,7 @@ enum Categories {
   vegetables,
   fruit,
   meat,
-  diary,
+  dairy,
   carbs, 
   sweets,
   spices,

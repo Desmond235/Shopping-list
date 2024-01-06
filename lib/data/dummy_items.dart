@@ -7,7 +7,7 @@ final  groceryItem = [
     id: 'a',
     name: 'Milk',
     quantity: 1,
-    category: categories[Categories.diary]!,
+    category: categories[Categories.dairy]!,
   ),
   GroceryItem(
     id: 'b',
