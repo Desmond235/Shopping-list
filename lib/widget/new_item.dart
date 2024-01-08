@@ -39,6 +39,7 @@ class _NewItemState extends State<NewItem> {
             children: [
               TextFormField(
                 maxLength: 50,
+                autocorrect: true,
                 decoration: const InputDecoration(label: Text('name')),
                 validator: (value) {
                   if (value == null ||
