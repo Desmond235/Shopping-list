@@ -45,13 +45,14 @@ class _NewItemState extends State<NewItem> {
                   if (value == null ||
                       value.isEmpty ||
                       value.trim().length <= 1 ||
-                      value.trim().length > 50) {
-                    return 'Must be between 1 and 50 characters.';
+                      value.trim().length > 50 ||
+                      RegExp(r'(\d|\d?[ ]\W)').hasMatch(value)) {
+                    return 'Must be between 1 and 50 characters and in words.';
                   }
                   return null;
                 },
                 onSaved: (newValue) {
-                  _enteredValue = newValue!;
+                  _enteredValue = newValue!.trim();
                 },
               ),
               Row(
@@ -74,7 +75,7 @@ class _NewItemState extends State<NewItem> {
                         return null;
                       },
                       onSaved: (newValue) {
-                        _enteredQuantity = int.parse(newValue!);
+                        _enteredQuantity = int.parse(newValue!.trim());
                       },
                     ),
                   ),
