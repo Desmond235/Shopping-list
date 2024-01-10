@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_list/data/categories.dart';
 import 'package:shopping_list/models/category.dart';
+import 'package:shopping_list/models/grocery_item.dart';
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -11,13 +12,26 @@ class NewItem extends StatefulWidget {
 
 class _NewItemState extends State<NewItem> {
   final _formkey = GlobalKey<FormState>();
-  var _enteredValue = '';
+  var _enteredName = '';
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
 
+/*
+* validates user imput
+* saves the user input only if validation is successful
+* pases the saved user input to the Grocery Item model when the user press the system back button
+*/
   void _saveItem() {
     if (_formkey.currentState!.validate()) {
       _formkey.currentState!.save();
+      Navigator.of(context).pop(
+        GroceryItem(
+          id: DateTime.now() as String,
+          name: _enteredName,
+          quantity: _enteredQuantity,
+          category: _selectedCategory,
+        ),
+      );
     }
   }
 
@@ -52,7 +66,7 @@ class _NewItemState extends State<NewItem> {
                   return null;
                 },
                 onSaved: (newValue) {
-                  _enteredValue = newValue!.trim();
+                  _enteredName = newValue!.trim();     //assigns the saved item to the initial item
                 },
               ),
               Row(
@@ -75,7 +89,7 @@ class _NewItemState extends State<NewItem> {
                         return null;
                       },
                       onSaved: (newValue) {
-                        _enteredQuantity = int.parse(newValue!.trim());
+                        _enteredQuantity = int.parse(newValue!.trim());   // assigns the saved quantity to the initial quantitty
                       },
                     ),
                   ),
