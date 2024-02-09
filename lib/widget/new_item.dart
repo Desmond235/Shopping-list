@@ -4,8 +4,9 @@ import 'package:shopping_list/models/category.dart';
 import 'package:shopping_list/models/grocery_item.dart';
 
 class NewItem extends StatefulWidget {
-  const NewItem({super.key});
+  const NewItem({super.key, required this.controller});
 
+  final AnimationController controller;
   @override
   State<NewItem> createState() => _NewItemState();
 }
@@ -26,13 +27,14 @@ class _NewItemState extends State<NewItem> {
       _formkey.currentState!.save();
       Navigator.of(context).pop(
         GroceryItem(
-          id: DateTime.now() as String,
+          id: DateTime.now().toString(),
           name: _enteredName,
           quantity: _enteredQuantity,
           category: _selectedCategory,
         ),
       );
     }
+    widget.controller.forward();
   }
 
   void _resetItem() {
@@ -66,7 +68,8 @@ class _NewItemState extends State<NewItem> {
                   return null;
                 },
                 onSaved: (newValue) {
-                  _enteredName = newValue!.trim();     //assigns the saved item to the initial item
+                  _enteredName = newValue!
+                      .trim(); //assigns the saved item to the initial item
                 },
               ),
               Row(
@@ -84,12 +87,13 @@ class _NewItemState extends State<NewItem> {
                             value.isEmpty ||
                             int.tryParse(value) == null ||
                             int.tryParse(value)! <= 0) {
-                          return 'Must be a valid positive number';
+                          return 'Quantity must be a valid positive number';
                         }
                         return null;
                       },
                       onSaved: (newValue) {
-                        _enteredQuantity = int.parse(newValue!.trim());   // assigns the saved quantity to the initial quantitty
+                        _enteredQuantity = int.parse(newValue!
+                            .trim()); // assigns the saved quantity to the initial quantitty
                       },
                     ),
                   ),
