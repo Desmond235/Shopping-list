@@ -4,9 +4,8 @@ import 'package:shopping_list/models/category.dart';
 import 'package:shopping_list/models/grocery_item.dart';
 
 class NewItem extends StatefulWidget {
-  const NewItem({super.key, required this.controller});
+  const NewItem({super.key});
 
-  final AnimationController controller;
   @override
   State<NewItem> createState() => _NewItemState();
 }
@@ -34,7 +33,7 @@ class _NewItemState extends State<NewItem> {
         ),
       );
     }
-    widget.controller.forward();
+    
   }
 
   void _resetItem() {

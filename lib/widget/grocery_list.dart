@@ -9,14 +9,19 @@ class GroceryListItem extends StatelessWidget {
   });
 
   final GroceryItem groceryItem;
-  final void Function() onRemoveItem;
+  final void Function(DismissDirection direction) onRemoveItem;
   @override
   Widget build(BuildContext context) {
     return Dismissible(
+      // background: Container(
+      //   color: Theme.of(context).colorScheme.errorContainer,
+      //   child: const ListTile(
+      //     leading: Icon(Icons.delete, color: Colors.white,),
+      //     trailing: Icon(Icons.delete, color: Colors.white),
+      //   ),
+      // ),
       key: ValueKey(groceryItem.id),
-      onDismissed: (direction) {
-        onRemoveItem;
-      },
+      onDismissed: onRemoveItem,
       child: ListTile(
         leading: Container(
           height: 20,
