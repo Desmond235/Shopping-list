@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
+import 'package:http/http.dart' as http;
+
 import 'package:shopping_list/data/categories.dart';
 import 'package:shopping_list/models/category.dart';
 import 'package:shopping_list/models/grocery_item.dart';
@@ -21,19 +26,37 @@ class _NewItemState extends State<NewItem> {
 * saves the user input only if validation is successful
 * pases the saved user input to the Grocery Item model when the user press the system back button
 */
-  void _saveItem() {
+  void _saveItem() async {
     if (_formkey.currentState!.validate()) {
       _formkey.currentState!.save();
-      Navigator.of(context).pop(
-        GroceryItem(
-          id: DateTime.now().toString(),
-          name: _enteredName,
-          quantity: _enteredQuantity,
-          category: _selectedCategory,
+      final url = Uri.https('flutter-app-eaf55-default-rtdb.firebaseio.com',
+          'shopping-list.json');
+      final response = await http.post(
+        url,
+        headers: {
+          'content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            'name': _enteredName,
+            'quantity': _enteredQuantity,
+            'category': _selectedCategory.title,
+          },
         ),
       );
+
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      
+      if (!context.mounted) {
+        return;
+      }
+      Navigator.of(context).pop(GroceryItem(
+        id: responseData['name'],
+        name: _enteredName,
+        quantity: _enteredQuantity,
+        category: _selectedCategory,
+      ));
     }
-    
   }
 
   void _resetItem() {
@@ -91,8 +114,9 @@ class _NewItemState extends State<NewItem> {
                         return null;
                       },
                       onSaved: (newValue) {
-                        _enteredQuantity = int.parse(newValue!
-                            .trim()); // assigns the saved quantity to the initial quantitty
+                        _enteredQuantity = int.parse(
+                          newValue!.trim(),
+                        ); // assigns the saved quantity to the initial quantitty
                       },
                     ),
                   ),
@@ -116,7 +140,7 @@ class _NewItemState extends State<NewItem> {
                                   const SizedBox(
                                     width: 6,
                                   ),
-                                  Text(category.value.name)
+                                  Text(category.value.title)
                                 ],
                               ))
                       ],
