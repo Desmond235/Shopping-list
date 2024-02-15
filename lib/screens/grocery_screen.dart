@@ -77,6 +77,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
     setState(() {
       _groceryItem.remove(item);
     });
+    
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
