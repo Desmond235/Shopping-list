@@ -46,16 +46,18 @@ class _NewItemState extends State<NewItem> {
       );
 
       final Map<String, dynamic> responseData = json.decode(response.body);
-      
+
       if (!context.mounted) {
         return;
       }
-      Navigator.of(context).pop(GroceryItem(
-        id: responseData['name'],
-        name: _enteredName,
-        quantity: _enteredQuantity,
-        category: _selectedCategory,
-      ));
+      Navigator.of(context).pop(
+        GroceryItem(
+          id: responseData['name'],
+          name: _enteredName,
+          quantity: _enteredQuantity,
+          category: _selectedCategory,
+        ),
+      );
     }
   }
 
@@ -85,7 +87,7 @@ class _NewItemState extends State<NewItem> {
                       value.trim().length <= 1 ||
                       value.trim().length > 50 ||
                       RegExp(r'(\d|\d?[ ]\W)').hasMatch(value)) {
-                    return 'Must be between 1 and 50 characters and in words.';
+                    return 'Title must be between 1 and 50 characters and in words.';
                   }
                   return null;
                 },
@@ -128,7 +130,7 @@ class _NewItemState extends State<NewItem> {
                       value: _selectedCategory,
                       items: [
                         for (final category in categories.entries)
-                          DropdownMenuItem(
+                          DropdownMenuItem(82
                               value: category.value,
                               child: Row(
                                 children: [
@@ -142,7 +144,7 @@ class _NewItemState extends State<NewItem> {
                                   ),
                                   Text(category.value.title)
                                 ],
-                              ))
+            8                  ))
                       ],
                       onChanged: (value) {
                         setState(() {
