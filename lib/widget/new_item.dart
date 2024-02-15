@@ -130,21 +130,22 @@ class _NewItemState extends State<NewItem> {
                       value: _selectedCategory,
                       items: [
                         for (final category in categories.entries)
-                          DropdownMenuItem(82
-                              value: category.value,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 17,
-                                    height: 17,
-                                    color: category.value.color,
-                                  ),
-                                  const SizedBox(
-                                    width: 6,
-                                  ),
-                                  Text(category.value.title)
-                                ],
-            8                  ))
+                          DropdownMenuItem(
+                            value: category.value,
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 17,
+                                  height: 17,
+                                  color: category.value.color,
+                                ),
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                Text(category.value.title)
+                              ],
+                            ),
+                          )
                       ],
                       onChanged: (value) {
                         setState(() {
