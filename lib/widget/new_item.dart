@@ -20,6 +20,7 @@ class _NewItemState extends State<NewItem> {
   var _enteredName = '';
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
+  var _isSending = false;
 
 /*
 * validates user imput
@@ -29,6 +30,9 @@ class _NewItemState extends State<NewItem> {
   void _saveItem() async {
     if (_formkey.currentState!.validate()) {
       _formkey.currentState!.save();
+      setState(() {
+        _isSending = true;
+      });
       final url = Uri.https('flutter-app-eaf55-default-rtdb.firebaseio.com',
           'shopping-list.json');
       final response = await http.post(
@@ -56,7 +60,7 @@ class _NewItemState extends State<NewItem> {
           name: _enteredName,
           quantity: _enteredQuantity,
           category: _selectedCategory,
-        ),
+        ),    
       );
     }
   }
@@ -161,12 +165,18 @@ class _NewItemState extends State<NewItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: _resetItem,
+                    onPressed: _isSending ? null : _resetItem,
                     child: const Text('reset'),
                   ),
                   ElevatedButton(
-                    onPressed: _saveItem,
-                    child: const Text('Add item'),
+                    onPressed: _isSending ? null : _saveItem,
+                    child: _isSending
+                        ? const  SizedBox(
+                            width: 16,
+                            height: 17,
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Text('Add item'),
                   )
                 ],
               )

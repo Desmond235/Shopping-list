@@ -18,6 +18,8 @@ class GroceryScreen extends StatefulWidget {
 
 class _GroceryScreenState extends State<GroceryScreen> {
   List<GroceryItem> _groceryItem = [];
+  var _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -30,6 +32,12 @@ class _GroceryScreenState extends State<GroceryScreen> {
         'flutter-app-eaf55-default-rtdb.firebaseio.com', 'shopping-list.json');
     final response = await http.get(url);
 
+    if (response.statusCode >= 400) {
+      setState(() {
+        _error = 'Failed to fetch data please try again later';
+      });
+    }
+
     final Map<String, dynamic> listItems = json.decode(response.body);
     final List<GroceryItem> loadData = [];
 
@@ -40,7 +48,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
                 categoryItem.value.title == item.value['category'],
           )
           .value;
-          
+
       loadData.add(
         GroceryItem(
             id: item.key,
@@ -52,6 +60,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
 
     setState(() {
       _groceryItem = loadData;
+      _isLoading = false;
     });
   }
 
@@ -77,7 +86,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
     setState(() {
       _groceryItem.remove(item);
     });
-    
+
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -106,27 +115,36 @@ class _GroceryScreenState extends State<GroceryScreen> {
           )
         ],
       ),
-      body: _groceryItem.isEmpty
-          ? const Center(
-              child: Text(
-                'You\'ve got no items yet',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+      body: _error != null
+          ? Center(
+              child: Text(_error!),
             )
-          : ListView.builder(
-              itemBuilder: (context, index) {
-                // Displays the user input added to the grocery item list in the category screen
-                return GroceryListItem(
-                    groceryItem: _groceryItem[index],
-                    onRemoveItem: (direction) {
-                      _removeItem(_groceryItem[index]);
-                    });
-              },
-              itemCount: _groceryItem.length,
-            ),
+          : _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : _groceryItem.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'You\'ve got no items yet',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemBuilder: (context, index) {
+                        // Displays the user input added to the grocery item list in the category screen
+                        return GroceryListItem(
+                          groceryItem: _groceryItem[index],
+                          onRemoveItem: (direction) {
+                            _removeItem(_groceryItem[index]);
+                          },
+                        );
+                      },
+                      itemCount: _groceryItem.length,
+                    ),
     );
   }
 }
