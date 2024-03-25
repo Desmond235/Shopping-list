@@ -29,7 +29,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
 
   void _loadItems() async {
     final url = Uri.https(
-        'flutter-app-eaf55-default-rtdb.firebaseio.com', 'shopping-list.json');
+        'https://shopping-list-ce56f-default-rtdb.firebaseio.com', 'shopping-list.json');
     final response = await http.get(url);
 
     if (response.statusCode >= 400) {
