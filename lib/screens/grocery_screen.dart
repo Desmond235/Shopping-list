@@ -29,39 +29,50 @@ class _GroceryScreenState extends State<GroceryScreen> {
 
   void _loadItems() async {
     final url = Uri.https(
-        'https://shopping-list-ce56f-default-rtdb.firebaseio.com', 'shopping-list.json');
-    final response = await http.get(url);
+        'https://shopping-list-ce56f-default-rtdb.firebaseio.com',
+        'shopping-list.json');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode >= 400) {
+        
+      }
 
-    if (response.statusCode >= 400) {
+      if (response.body == 'null') {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
+
+      final Map<String, dynamic> listItems = json.decode(response.body);
+      final List<GroceryItem> loadData = [];
+
+      for (var item in listItems.entries) {
+        final category = categories.entries
+            .firstWhere(
+              (categoryItem) =>
+                  categoryItem.value.title == item.value['category'],
+            )
+            .value;
+
+        loadData.add(
+          GroceryItem(
+              id: item.key,
+              name: item.value['name'],
+              quantity: item.value['quantity'],
+              category: category),
+        );
+      }
+
       setState(() {
-        _error = 'Failed to fetch data please try again later';
+        _groceryItem = loadData;
+        _isLoading = false;
       });
+    } catch (error) {
+      setState(() {
+          _error = 'Something went wrong! Please try again later.';
+        });
     }
-
-    final Map<String, dynamic> listItems = json.decode(response.body);
-    final List<GroceryItem> loadData = [];
-
-    for (var item in listItems.entries) {
-      final category = categories.entries
-          .firstWhere(
-            (categoryItem) =>
-                categoryItem.value.title == item.value['category'],
-          )
-          .value;
-
-      loadData.add(
-        GroceryItem(
-            id: item.key,
-            name: item.value['name'],
-            quantity: item.value['quantity'],
-            category: category),
-      );
-    }
-
-    setState(() {
-      _groceryItem = loadData;
-      _isLoading = false;
-    });
   }
 
   void _addItem() async {
@@ -81,26 +92,23 @@ class _GroceryScreenState extends State<GroceryScreen> {
     });
   }
 
-  void _removeItem(GroceryItem item) {
+  void _removeItem(GroceryItem item) async {
     final groceryIndex = _groceryItem.indexOf(item);
     setState(() {
       _groceryItem.remove(item);
     });
 
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Grocery item deleted'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            setState(() {
-              _groceryItem.insert(groceryIndex, item);
-            });
-          },
-        ),
-      ),
-    );
+    final url = Uri.https(
+        'https://shopping-list-ce56f-default-rtdb.firebaseio.com',
+        'shopping-list/${item.id}.json');
+
+    final response = await http.delete(url);
+
+    if (response.statusCode >= 400) {
+      setState(() {
+        _groceryItem.insert(groceryIndex, item);
+      });
+    }
   }
 
   @override
