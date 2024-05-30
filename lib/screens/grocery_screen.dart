@@ -33,9 +33,7 @@ class _GroceryScreenState extends State<GroceryScreen> {
         'shopping-list.json');
     try {
       final response = await http.get(url);
-      if (response.statusCode >= 400) {
-        
-      }
+      if (response.statusCode >= 400) {}
 
       if (response.body == 'null') {
         setState(() {
@@ -70,8 +68,8 @@ class _GroceryScreenState extends State<GroceryScreen> {
       });
     } catch (error) {
       setState(() {
-          _error = 'Something went wrong! Please try again later.';
-        });
+        _error = 'Something went wrong! Please try again later.';
+      });
     }
   }
 
